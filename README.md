@@ -1,4 +1,4 @@
-# Dino Cheats <sub>0.1 Beta</sub>
+# Dino Cheats `0.1 Beta`
 
 ---
 
