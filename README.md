@@ -32,16 +32,11 @@ Since this is a simple JavaScript-based cheat, there's no complex installation r
      - This is the Code
   
 ```js
-// The URL of the script you want to load
 const scriptUrl = 'https://raw.githubusercontent.com/AndresDev859674/DinoCheats/refs/heads/main/script.js';
 
-// Fetch the script content
 fetch(scriptUrl)
-    .then(response => response.text()) // Get the response body as text
+    .then(response => response.text())
     .then(scriptContent => {
-        // --- CRITICAL SECURITY WARNING ---
-        // This will execute any JavaScript code found in 'scriptContent'.
-        // Only use this if you fully trust the source of the script!
         eval(scriptContent);
         console.log("Script executed!");
     })
