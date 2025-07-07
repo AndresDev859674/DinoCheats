@@ -1,4 +1,4 @@
-# Dino Cheats 0.1 Beta
+# Dino Cheats <sub>0.1 Beta</sub>
 
 ---
 
@@ -6,6 +6,9 @@
 
 Welcome, DinoCheats are cheats for the Google Dino game. This project was made for fun. Version 0.1 (BETA & inestable)
 
+> [!WARNING]
+> This project is unstable, this could change in Updates
+> 
 ### 🌟 Features
 
 * **God Mode (Invincibility):** Never hit an obstacle again!
