@@ -50,3 +50,8 @@ fetch(scriptUrl)
 ### 🎮 Usage
 
 Just go to the commands you are going to use and type and enter and that's it, it's very simple
+
+### 📕 Documentation
+
+the New Docs!
+![DinoCheats Docs](https://andres-studios.gitbook.io/dinocheats-docs)
