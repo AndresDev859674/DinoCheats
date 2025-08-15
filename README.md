@@ -1,13 +1,13 @@
-# Dino ***Cheats*** `0.2 Beta`
+# Dino ***Cheats*** `1.0 Beta`
 
 ---
 
 ## 🦖 Dino Cheats - Get (*some*) fun out of cheating! 🚀
 
-Welcome, DinoCheats are cheats for the Google Dino game. This project was made for fun. Version 0.2 (BETA)
+Welcome, DinoCheats are cheats for the Google Dino game. This project was made for fun. Version 1.0
 
 > [!NOTE]
-> This game is for people who just want to have fun playing the famous Google Dinosaur game...
+> This game is for people who just want to have fun playing the famous Google Dinosaur game... Or Changing the Game
 > 
 ### 🌟 Features
 
