@@ -1,4 +1,4 @@
-# Dino ***Cheats*** `1.0 Beta`
+# Dino ***Cheats*** `1.0 Stable`
 
 ---
 
