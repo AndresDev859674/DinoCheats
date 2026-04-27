@@ -1,15 +1,14 @@
-# Dino ***Cheats*** `1.0 Stable`
+# Dino ***Cheats*** 
+`1.0 Stable` `Alpha 0.1`
 
 ---
 
-## 🦖 Dino Cheats - Get (*some*) fun out of cheating! 🚀
-
-Welcome, DinoCheats are cheats for the Google Dino game. This project was made for fun. Version 1.0
+This is DinoCheats, is a easy-friendly GUI for cheats for the Chrome Dino Game
 
 > [!NOTE]
 > This game is for people who just want to have fun playing the famous Google Dinosaur game... Or Changing the Game
 > 
-### 🌟 Features
+### Features
 
 * **God Mode (Invincibility):** Never hit an obstacle again!
 * **Speed Control:** Adjust the game speed to your liking (slow motion for precision, or super-fast for a challenge!).
@@ -18,7 +17,7 @@ Welcome, DinoCheats are cheats for the Google Dino game. This project was made f
 
 ---
 
-### 🛠️ Installation
+### Installation
 
 Since this is a simple JavaScript-based cheat, there's no complex installation required.
 
@@ -32,7 +31,7 @@ Since this is a simple JavaScript-based cheat, there's no complex installation r
      - This is the Code
   
 ```js
-const scriptUrl = 'https://raw.githubusercontent.com/AndresDev859674/DinoCheats/refs/heads/main/script.js';
+const scriptUrl = 'https://raw.githubusercontent.com/AndresDev859674/DinoCheats/refs/heads/main/alpha.js';
 
 fetch(scriptUrl)
     .then(response => response.text())
@@ -47,11 +46,6 @@ fetch(scriptUrl)
 
 ---
 
-### 🎮 Usage
+### Documentation
 
-Just go to the commands you are going to use and type and enter and that's it, it's very simple
-
-### 📕 Documentation
-
-the New Docs!
 ![DinoCheats Docs](https://andres-studios.gitbook.io/dinocheats-docs)
