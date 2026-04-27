@@ -391,7 +391,7 @@
             <div><a href="https://ko-fi.com/andrew4630" id="dc-lang-btn" class="button">Support us</a></div>
             <hr>
             <h2>Supported Sites</h2>
-            <span class="dc-label">chromedino.com</span><br><br>
+            <span class="dc-label">chromedino.com (Use Safe Mode)</span><br><br>
             <span class="dc-label">chrome://dino & pwa-dino.github.io (Currenly in Working)</span>
             </div>
             </div>
