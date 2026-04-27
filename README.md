@@ -1,5 +1,5 @@
 # Dino ***Cheats*** 
-`1.0 Stable` `Alpha 0.1`
+`1.0 Stable` `Alpha 0.2`
 
 ---
 
