@@ -13,25 +13,44 @@
             godmode: "God Mode",
             pause: "Pause Game",
             speed: "Speed",
+            ver: "Alpha 0.2",
+            branch: "Alpha",
             jump: "Jump Force",
             gravity: "Gravity",
             distance: "Distance (Score)",
-            apply: "Apply",
-            resetScore: "Reset Score",
-            die: "Die",
-            revive: "Revive",
-            projectInfo: "Project Info",
-            desc: "Drag the title bar to move. [Tab] toggles the menu. Use <code>DinoCheats.setSpeed(value)</code> etc. in DevTools.",
-            close: "Close",
-            minimize: "Minimize",
-            animLabel: "Panel Animation",
-            animScale: "Scale In",
-            animFade: "Fade In/Out",
-            animNone: "None",
-            safeMode: "Safe Mode (No Ban)"
+ apply: "Apply",
+ resetScore: "Reset Score",
+ die: "Die",
+ revive: "Revive",
+ projectInfo: "Project Info",
+ desc: "Drag the title bar to move. [Tab] toggles the menu. Use <code>DinoCheats.setSpeed(value)</code> etc. in DevTools.",
+ close: "Close",
+ minimize: "Minimize",
+ animLabel: "Panel Animation",
+ animScale: "Scale In",
+ animFade: "Fade In/Out",
+ animNone: "None",
+ safeMode: "Safe Mode (No Ban)"
         }
     };
     let lang = "en";
+
+    // ======== SPRITE MANAGEMENT additions ========
+    // (just after labels/lang and before DinoEngine definition)
+    const SPRITE_DEFAULT = "https://chromedino.com/assets/offline-sprite-1x.png";
+    const SPRITE_PRESETS = [
+        {name:"Default", url: SPRITE_DEFAULT},
+        {name:"Godzilla", url:"https://raw.githubusercontent.com/AndresDev859674/DinoCheats/refs/heads/main/runners/godzilla.png"},
+        {name:"Naruto", url: "https://raw.githubusercontent.com/AndresDev859674/DinoCheats/refs/heads/main/runners/offline-sprite-1x-naruto.png"},
+        {name:"Mario", url: "https://chromedino.com/assets/offline-sprite-1x-mario.png"},
+        {name:"Batman", url: "https://chromedino.com/assets/batman1x.png"},
+        {name:"Joker", url: "https://chromedino.com/assets/joker1x.png"},
+    ];
+
+    // Utility to run sprite replace only on chromedino.com
+    function canSwapSprites() {
+        return location.hostname === "chromedino.com";
+    }
 
     // --- ENGINE ---
     class DinoEngine {
@@ -39,7 +58,47 @@
             this.instance = window.Runner.instance_;
             this.originalGameOver = this.instance.gameOver;
             this.safeModeInterval = null;
+            this._currentTexture = SPRITE_DEFAULT;
+            this._originalSpriteSrc = SPRITE_DEFAULT;
+            this._imageElement = null;
+            // Find the dino runner sprite (chromedino.com only)
+            if (canSwapSprites()) {
+                this._imageElement = document.querySelector('img[src*="offline-sprite"]') ||
+                Array.from(document.getElementsByTagName("img")).find(img => img.src.includes("offline-sprite"));
+                if (this._imageElement) {
+                    this._originalSpriteSrc = this._imageElement.src;
+                    this._currentTexture = this._imageElement.src;
+                }
+            }
+
+            this._dashEnabled = true;
+            this._dashBoost = 25;
+            this._defaultSpeed = (
+                (this.instance && typeof this.instance.currentSpeed !== "undefined") ? this.instance.currentSpeed :
+                (this.instance && typeof this.instance.speed !== "undefined") ? this.instance.speed :
+                13
+            );
+            this._dashActive = false;
+
+            window.addEventListener('keydown', this._dashHandler = (e) => {
+                if (!this._dashEnabled) return;
+                if ((e.key === "Shift" || e.key === "ShiftLeft" || e.key === "ShiftRight") && !this._dashActive) {
+                    this._dashActive = true;
+                    this._defaultSpeed = this.instance.currentSpeed; // capture actual in-game speed
+                    this.setSpeed(Number(this._defaultSpeed) + Number(this._dashBoost));
+                }
+            });
+            window.addEventListener('keyup', this._dashReleaseHandler = (e) => {
+                if (!this._dashEnabled) return;
+                if ((e.key === "Shift" || e.key === "ShiftLeft" || e.key === "ShiftRight") && this._dashActive) {
+                    this.setSpeed(this._defaultSpeed);
+                    this._dashActive = false;
+                }
+            });
         }
+        enableDash(on) { this._dashEnabled = !!on; }
+        setDashBoost(boost) { this._dashBoost = Number(boost); }
+        getDashBoost() { return this._dashBoost; }
         setGodMode(on) { this.instance.gameOver = on ? ()=>{} : this.originalGameOver; }
         setSpeed(val) { this.instance.setSpeed(Number(val)); }
         setJump(val) { this.instance.tRex.config.JUMP_VELOCITY = Number(val);}
@@ -65,22 +124,58 @@
                 }
             }
         }
+        setTextures(url) {
+            if (!canSwapSprites()) {
+                alert("Sprite changing only works on chromedino.com!");
+                return;
+            }
+            if (!this._imageElement) {
+                this._imageElement = document.querySelector('img[src*="offline-sprite"]') ||
+                Array.from(document.getElementsByTagName("img")).find(img => img.src.includes("offline-sprite"));
+            }
+            if (this._imageElement) {
+                this._imageElement.src = url;
+                this._currentTexture = url;
+                // Also update the instance's reference if possible
+                if (this.instance && this.instance.spriteDef) this.instance.spriteDef.spriteSheet = url;
+            } else {
+                alert("Couldn't find the dino sprite image element.");
+            }
+        }
+        showTextures() {
+            if (!canSwapSprites()) {
+                alert("Only available on chromedino.com");
+                return;
+            }
+            console.log(`[DinoCheats] Current Sprite Sheet URL:`, this._currentTexture);
+            return this._currentTexture;
+        }
+        reset() {
+            this.setTextures(this._originalSpriteSrc || SPRITE_DEFAULT);
+        }
     }
 
     // API
     function exposeCheatAPI(engine) {
         window.DinoCheats = {
             setGodMode: v=>engine.setGodMode(v),
-            setSpeed: v=>engine.setSpeed(v),
-            setJump: v=>engine.setJump(v),
-            setGravity: v=>engine.setGravity(v),
-            setDistance: v=>engine.setDistance(v),
-            pause: ()=>engine.togglePause(true),
-            resume: ()=>engine.togglePause(false),
-            resetScore: ()=>engine.resetScore(),
-            die: ()=>engine.die(),
-            revive: ()=>engine.revive(),
-            setSafeMode: v=>engine.setSafeMode(v),
+ setSpeed: v=>engine.setSpeed(v),
+ setJump: v=>engine.setJump(v),
+ setGravity: v=>engine.setGravity(v),
+ setDistance: v=>engine.setDistance(v),
+ pause: ()=>engine.togglePause(true),
+ resume: ()=>engine.togglePause(false),
+ resetScore: ()=>engine.resetScore(),
+ die: ()=>engine.die(),
+ revive: ()=>engine.revive(),
+ setSafeMode: v=>engine.setSafeMode(v),
+ // --- Sprite API ---
+ setTextures: url => engine.setTextures(url),
+ showTextures: ()=>engine.showTextures(),
+ reset: ()=>engine.reset(),
+ enableDash: v => engine.enableDash(v),
+ setDashBoost: v => engine.setDashBoost(v),
+ getDashBoost: ()=> engine.getDashBoost(),
         };
         console.log(
             `%cDINOCHEATS
@@ -156,6 +251,16 @@
             }
 
             .dc-logo-2 {color:var(--text-dim); margin-left:24px; font-size:16px; font-weight:600;}
+
+            .dc-btn-action img {
+                margin-right: 7px;
+                vertical-align: middle;
+                height: 28px;
+                width: auto;
+                border-radius: 4px;
+                background: #222;
+                box-shadow: 0 0 2px #000a;
+            }
 
             #dc-header-btns {
             margin-right:18px; display:flex; align-items:center; gap:8px;
@@ -281,7 +386,7 @@
             <div id="dc-header">
             <svg class="dc-logo-2" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M19.875 6.27c.7.398 1.13 1.143 1.125 1.948v7.284c0 .809-.443 1.555-1.158 1.948l-6.75 4.27a2.27 2.27 0 0 1-2.184 0l-6.75-4.27A2.23 2.23 0 0 1 3 15.502V8.217c0-.809.443-1.554 1.158-1.947l6.75-3.98a2.33 2.33 0 0 1 2.25 0l6.75 3.98z"/><path d="M15.5 9.422c.312.18.503.515.5.876v3.277c0 .364-.197.7-.515.877l-3 1.922a1 1 0 0 1-.97 0l-3-1.922A1 1 0 0 1 8 13.576v-3.278c0-.364.197-.7.514-.877l3-1.79c.311-.174.69-.174 1 0l3 1.79H15.5z"/></g></svg>
             <div id="dc-logo">${this.L.logo}</div>
-            <p class="dc-label">Alpha</p>
+            <p class="dc-label">${this.L.branch}</p>
             <p></p>
             <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32"><path fill="#f5de19" d="M18.774 19.7a3.73 3.73 0 0 0 3.376 2.078c1.418 0 2.324-.709 2.324-1.688c0-1.173-.931-1.589-2.491-2.272l-.856-.367c-2.469-1.052-4.11-2.37-4.11-5.156c0-2.567 1.956-4.52 5.012-4.52A5.06 5.06 0 0 1 26.9 10.52l-2.665 1.711a2.33 2.33 0 0 0-2.2-1.467a1.49 1.49 0 0 0-1.638 1.467c0 1.027.636 1.442 2.1 2.078l.856.366c2.908 1.247 4.549 2.518 4.549 5.376c0 3.081-2.42 4.769-5.671 4.769a6.58 6.58 0 0 1-6.236-3.5ZM6.686 20c.538.954 1.027 1.76 2.2 1.76c1.124 0 1.834-.44 1.834-2.15V7.975h3.422v11.683c0 3.543-2.078 5.156-5.11 5.156A5.31 5.31 0 0 1 3.9 21.688Z"/></svg>
             <i class="fa-brands fa-js"></i>
@@ -306,43 +411,68 @@
         }
 
         genSections() {
+            // Helper para generar los botones de los presets de sprites
+            const spritePresetsHtml = SPRITE_PRESETS.map(s => `
+            <button class="preset-sprite dc-btn-action" data-url="${s.url}" title="${s.name}">
+            <img src="${s.url}" alt="${s.name}" style="height:28px; width:auto; vertical-align:middle; margin-right:7px; border-radius:4px; background:#222;">
+            ${s.name}
+            </button>
+            `).join('');
+
             return `
             <div class="dc-section active" id="section-general">
             <h2>${this.L.general}</h2>
+
             <div class="dc-row">
             <span class="dc-label">${this.L.godmode}</span>
-            <label class="dc-switch"><input type="checkbox" id="chk-god"><span class="dc-slider"></span></label>
+            <label class="dc-switch">
+            <input type="checkbox" id="chk-god">
+            <span class="dc-slider"></span>
+            </label>
             </div>
+
             <div class="dc-row">
             <span class="dc-label">${this.L.pause}</span>
-            <label class="dc-switch"><input type="checkbox" id="chk-pause"><span class="dc-slider"></span></label>
+            <label class="dc-switch">
+            <input type="checkbox" id="chk-pause">
+            <span class="dc-slider"></span>
+            </label>
             </div>
+
             <div class="dc-row">
             <span class="dc-label">${this.L.speed}</span>
             <input type="range" id="rng-speed" class="dc-range" min="10" max="500" value="13">
             <input type="number" id="num-speed" class="dc-input" value="13">
             </div>
+
             <div class="dc-row">
             <span class="dc-label">${this.L.distance}</span>
             <input type="range" id="rng-dist" class="dc-range" min="0" max="99999" value="0">
             <input type="number" id="num-dist" class="dc-input" value="0">
             <button id="btn-dist" class="dc-btn-action">${this.L.apply}</button>
             </div>
+
             <div class="dc-row">
             <span class="dc-label">${this.L.resetScore}</span>
             <button id="btn-reset" class="dc-btn-action">${this.L.resetScore}</button>
             </div>
+
             <div class="dc-row">
             <span class="dc-label">${this.L.die}</span>
             <button id="btn-kill" class="dc-btn-action">${this.L.die}</button>
-            <span class="dc-label">${this.L.revive}</span>
+            <span class="dc-label" style="margin-left:10px">${this.L.revive}</span>
             <button id="btn-revive" class="dc-btn-action">${this.L.revive}</button>
             </div>
+
             <div class="dc-row">
             <span class="dc-label">${this.L.safeMode}</span>
-            <label class="dc-switch"><input type="checkbox" id="chk-safe"><span class="dc-slider"></span></label>
+            <label class="dc-switch">
+            <input type="checkbox" id="chk-safe">
+            <span class="dc-slider"></span>
+            </label>
             </div>
             </div>
+
             <div class="dc-section" id="section-world">
             <h2>${this.L.world}</h2>
             <div class="dc-row">
@@ -350,7 +480,26 @@
             <input type="range" id="rng-grav" class="dc-range" min="0.05" max="9999" value="0.6" step="0.01">
             <input type="number" id="num-grav" class="dc-input" value="0.6" step="0.01">
             </div>
+
+            <div style="margin:25px 0 8px 0; border-top:1px solid var(--soft); padding-top:15px;">
+            <h3 style="color:var(--accent); margin:0 0 12px 0; font-size:18px;">
+            Sprite Manager <span style="font-size:11px; opacity:0.7;">(chromedino.com only)</span>
+            </h3>
+
+            <div class="dc-row" style="gap:10px; flex-wrap:wrap; margin-bottom:10px;">
+            <span class="dc-label" title="URL of sprite sheet image">URL:</span>
+            <input id="sprite-url" type="url" value="${SPRITE_DEFAULT}" style="flex:2 1 180px;" class="dc-input">
+            <button id="btn-apply-sprite" class="dc-btn-action">Apply</button>
+            <button id="btn-reset-sprite" class="dc-btn-action">Reset</button>
             </div>
+
+            <div class="dc-row" style="gap:10px; flex-wrap:wrap;">
+            <span class="dc-label">Presets:</span>
+            ${spritePresetsHtml}
+            </div>
+            </div>
+            </div>
+
             <div class="dc-section" id="section-player">
             <h2>${this.L.player}</h2>
             <div class="dc-row">
@@ -358,41 +507,62 @@
             <input type="range" id="rng-jump" class="dc-range" min="5" max="30" value="10">
             <input type="number" id="num-jump" class="dc-input" value="10">
             </div>
+
+            <div class="dc-row">
+            <span class="dc-label">Dash (Shift)</span>
+            <label class="dc-switch">
+            <input type="checkbox" id="chk-dash" checked>
+            <span class="dc-slider"></span>
+            </label>
+            <span class="dc-label" style="margin-left:15px;">Boost</span>
+            <input type="range" id="rng-dash-boost" class="dc-range" min="5" max="200" value="25">
+            <input type="number" id="num-dash-boost" class="dc-input" value="25">
             </div>
+            <p style="font-size:11px; margin-top:5px; color:var(--soft-text);">
+            Hold <b>Shift</b> while playing to dash! (Boosts speed by set amount)
+            </p>
+            </div>
+
             <div class="dc-section" id="section-settings">
             <h2>${this.L.projectInfo}</h2>
             <div class="dc-row">
             <span class="dc-label">${this.L.animLabel}</span>
             <select id="anim-select" class="dc-input">
-            <option value="scale"${this.anim=="scale"?" selected":""}>${this.L.animScale}</option>
-            <option value="fade"${this.anim=="fade"?" selected":""}>${this.L.animFade}</option>
-            <option value="none"${this.anim=="none"?" selected":""}>${this.L.animNone}</option>
+            <option value="scale" ${this.anim == "scale" ? "selected" : ""}>${this.L.animScale}</option>
+            <option value="fade" ${this.anim == "fade" ? "selected" : ""}>${this.L.animFade}</option>
+            <option value="none" ${this.anim == "none" ? "selected" : ""}>${this.L.animNone}</option>
             </select>
             </div>
-            <div style="color:#babec3;font-size:13px;line-height:1.7">
+            <div style="color:#babec3; font-size:13px; line-height:1.7; margin-top:15px;">
             ${this.L.desc}
             <br><br>
-            <b>DevTools:</b>
-            <code>DinoCheats.setSpeed(value)</code>, <code>DinoCheats.setGodMode(true)</code>, etc.
+            <b>DevTools Console:</b><br>
+            <code>DinoCheats.setSpeed(value)</code>, <code>DinoCheats.setGodMode(true)</code>
             </div>
             </div>
 
-
-            <div class="dc-section" id="section-about">
-            <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 32 32">
-            <!-- Icon from Pixel free icons by Streamline - https://creativecommons.org/licenses/by/4.0/ -->
+            <div class="dc-section" id="section-about" style="text-align:center;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 32 32" style="margin-bottom:10px;">
             <path fill="currentColor" d="M30.48 25.145H32v1.52h-1.52ZM32 14.475v-3.05h-1.52v1.53h-1.53v-3.05h-1.52v6.1H25.9v-1.53h-1.52v3.05h3.05v4.57h-7.62v1.53H32v-1.53h-3.05v-7.62zM28.95.765H32v1.52h-3.05Zm-3.05 24.38h1.53v1.52H25.9Zm-1.52-21.33h3.05v1.52h-3.05Zm-4.57 21.33h1.52v1.52h-1.52Zm0-15.24h-4.57v1.52h4.57v1.53h1.52v-7.62h-1.52zm-6.1 6.1h-3.04v1.52h3.04v1.52h-3.04v-1.52H9.14v6.1h4.57v1.52H9.14v1.52H4.57V28.2H6.1v3.04h3.04v-1.52H7.62V28.2h4.57v-1.53h1.52v1.53h3.05v-1.53h-1.52v-6.09h1.52v1.52h1.53v-3.05h-3.05v-4.57h4.57v-1.52h-6.1Zm0 6.09h-3.04v-1.52h3.04ZM10.67.765h3.04v1.52h-3.04Zm-1.53 6.09h1.53v3.05H9.14Z"/>
             <path fill="currentColor" d="M7.62 3.815h12.19v1.52H7.62Zm0 19.81h1.52v1.52H7.62ZM6.1 5.335h1.52v10.67H6.1Zm-1.53 10.67H6.1v4.57H4.57Zm-1.52 9.14h1.52v1.52H3.05Zm0-4.57h1.52v1.52H3.05Zm-1.53 3.05h1.53v1.52H1.52ZM0 5.335h3.05v1.52H0Zm1.52 15.24h1.53v-1.53H1.52v-1.52H0v6.1h1.52z"/>
             </svg>
-            <h2>${this.L.logo}</h2><span class="dc-label">Alpha 0.1</span><br><br>
-            <span class="dc-label">This is not made to cheat the game, I Created this for fun</span><br><br>
-            <span class="dc-label">if you are using this really for Cheats, im not responsable for this actions</span>
-            <hr>
-            <div><a href="https://ko-fi.com/andrew4630" id="dc-lang-btn" class="button">Support us</a></div>
-            <hr>
-            <h2>Supported Sites</h2>
-            <span class="dc-label">chromedino.com (Use Safe Mode)</span><br><br>
-            <span class="dc-label">chrome://dino & pwa-dino.github.io (Currenly in Working)</span>
+            <h2>${this.L.logo}</h2>
+            <span class="dc-label" style="display:block; margin-bottom:15px;">${this.L.ver}</span>
+
+            <p style="font-size:12px; color:#babec3; margin:10px 0;">
+            This tool is created for educational and fun purposes only.<br>
+            The developer is not responsible for any misuse.
+            </p>
+
+            <hr style="border:0; border-top:1px solid var(--soft); margin:15px 0;">
+            <a href="https://ko-fi.com/andrew4630" target="_blank" class="dc-btn-action" style="text-decoration:none; display:inline-block; padding:8px 20px;">Support us on Ko-fi</a>
+            <hr style="border:0; border-top:1px solid var(--soft); margin:15px 0;">
+
+            <h3>Supported Sites</h3>
+            <div style="font-size:12px; opacity:0.8;">
+            • chromedino.com (Use Safe Mode)<br>
+            • chrome://dino (In Development)<br>
+            • pwa-dino.github.io (In Development)
             </div>
             </div>
             `;
@@ -437,7 +607,37 @@
             // Reset
             C.querySelector('#btn-reset').onclick = ()=> this.engine.resetScore();
             // Gravity (slider+input)
+            // Gravity (already present)
             let sldG = C.querySelector('#rng-grav'), inpG = C.querySelector('#num-grav');
+            // ...
+
+            // ==== Sprite Manager (World Tab) ====
+            const spriteUrl = C.querySelector('#sprite-url');
+            const btnApplySprite = C.querySelector('#btn-apply-sprite');
+            const btnResetSprite = C.querySelector('#btn-reset-sprite');
+            const presetBtns = C.querySelectorAll('.preset-sprite');
+
+            // URL input and apply
+            btnApplySprite.onclick = () => {
+                if (!spriteUrl.value.trim()) return alert("Enter a valid sprite URL!");
+                this.engine.setTextures(spriteUrl.value.trim());
+            };
+            // Reset to default
+            btnResetSprite.onclick = () => {
+                this.engine.reset();
+                spriteUrl.value = SPRITE_DEFAULT; // update input, for UX
+            };
+            // Preset buttons
+            presetBtns.forEach(btn =>
+            btn.onclick = () => {
+                const url = btn.getAttribute("data-url");
+                spriteUrl.value = url;
+                this.engine.setTextures(url);
+            }
+            );
+            // Optionally: set input to current
+            if (canSwapSprites() && this.engine._currentTexture) spriteUrl.value = this.engine._currentTexture;
+
             sldG.oninput = e=>{inpG.value=e.target.value;this.engine.setGravity(e.target.value);}
             inpG.onchange = e=>{
                 let v = Math.max(0.05,Math.min(2,parseFloat(e.target.value)||0.6));
@@ -511,6 +711,21 @@
             // Drag/move window by header
             this.enableDragWindow(C.querySelector('#dc-header'));
             C.style.display='';
+
+            // Dash (checkbox, slider, input)
+            const dashCheck = C.querySelector('#chk-dash');
+            dashCheck.onchange = e => this.engine.enableDash(e.target.checked);
+
+            let dashSlider = C.querySelector('#rng-dash-boost'), dashInput = C.querySelector('#num-dash-boost');
+            dashSlider.oninput = e => { dashInput.value = e.target.value; this.engine.setDashBoost(e.target.value); }
+            dashInput.onchange = e => {
+                let v = Math.max(5, Math.min(200, Number(e.target.value)||25));
+                dashSlider.value = v; e.target.value = v;
+                this.engine.setDashBoost(v);
+            };
+            // On UI show, sync with engine config
+            dashCheck.checked = typeof this.engine._dashEnabled !== "undefined" ? !!this.engine._dashEnabled : true;
+            dashSlider.value = dashInput.value = this.engine.getDashBoost();
         }
         enableDragWindow(header) {
             const C = this.container;
