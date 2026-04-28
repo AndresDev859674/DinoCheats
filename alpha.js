@@ -43,7 +43,6 @@
         {name:"Minecraft", url: "https://i.imgur.com/vhUjTZL.png';document.getElementById('offline-resources-2x').src='https://i.imgur.com/y27zIvC.png"},
         {name:"Stick", url: "https://i.imgur.com/X58GzPw.png"},
         {name:"Kirby", url: "https://i.imgur.com/5nnYgMR.png"},
-        {name:"Lil Nezuko chan", url: "https://i.ibb.co/37DSwDX/nezuko.png"},
     ];
 
     const COM_SPRITE_PRESETS = [
@@ -54,6 +53,7 @@
         {name:"Batman", url: "https://chromedino.com/assets/batman1x.png"},
         {name:"Joker", url: "https://chromedino.com/assets/joker1x.png"},
         {name:"Hallowen", url: "https://dinorunner.com/static/images/halloween/offline-sprite-1x-halloween.png"},
+        {name:"Lil Nezuko chan", url: "https://media2.dev.to/dynamic/image/width=800%2Cheight=%2Cfit=scale-down%2Cgravity=auto%2Cformat=auto/https%3A%2F%2Fdev-to-uploads.s3.amazonaws.com%2Fuploads%2Farticles%2Fzr5cyrz50orsb0ej1a9v.png"},
     ];
 
     // Utility to run sprite replace only on chromedino.com
@@ -519,7 +519,7 @@
             </div>
 
             <div class="dc-row" style="gap:10px; flex-wrap:wrap;">
-            <span class="dc-label">chromedino.com or Others Presets:</span>
+            <span class="dc-label">Chrome Dino 2023 :</span>
             ${comSpritePresetsHtml}
             </div>
             </div>
