@@ -39,12 +39,21 @@
     // (just after labels/lang and before DinoEngine definition)
     const SPRITE_DEFAULT = "https://chromedino.com/assets/offline-sprite-1x.png";
     const SPRITE_PRESETS = [
+        {name:"Default", url: "data:image/png;base64,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"},
+        {name:"Minecraft", url: "https://i.imgur.com/vhUjTZL.png';document.getElementById('offline-resources-2x').src='https://i.imgur.com/y27zIvC.png"},
+        {name:"Stick", url: "https://i.imgur.com/X58GzPw.png"},
+        {name:"Kirby", url: "https://i.imgur.com/5nnYgMR.png"},
+        {name:"Lil Nezuko chan", url: "https://i.ibb.co/37DSwDX/nezuko.png"},
+    ];
+
+    const COM_SPRITE_PRESETS = [
         {name:"Default", url: SPRITE_DEFAULT},
         {name:"Godzilla", url:"https://raw.githubusercontent.com/AndresDev859674/DinoCheats/refs/heads/main/runners/godzilla.png"},
         {name:"Naruto", url: "https://raw.githubusercontent.com/AndresDev859674/DinoCheats/refs/heads/main/runners/offline-sprite-1x-naruto.png"},
         {name:"Mario", url: "https://chromedino.com/assets/offline-sprite-1x-mario.png"},
         {name:"Batman", url: "https://chromedino.com/assets/batman1x.png"},
         {name:"Joker", url: "https://chromedino.com/assets/joker1x.png"},
+        {name:"Hallowen", url: "https://dinorunner.com/static/images/halloween/offline-sprite-1x-halloween.png"},
     ];
 
     // Utility to run sprite replace only on chromedino.com
@@ -60,15 +69,27 @@
             this.safeModeInterval = null;
             this._currentTexture = SPRITE_DEFAULT;
             this._originalSpriteSrc = SPRITE_DEFAULT;
+
+            // v1. Sprite element for chromedino.com
             this._imageElement = null;
-            // Find the dino runner sprite (chromedino.com only)
-            if (canSwapSprites()) {
-                this._imageElement = document.querySelector('img[src*="offline-sprite"]') ||
-                Array.from(document.getElementsByTagName("img")).find(img => img.src.includes("offline-sprite"));
-                if (this._imageElement) {
-                    this._originalSpriteSrc = this._imageElement.src;
-                    this._currentTexture = this._imageElement.src;
-                }
+            // v2. Sprite element for chrome://dino (ID=offline-resources-1x)
+            this._imageElementById = null;
+
+            // Busca variaciones comunes de sprites:
+            // chromedino.com o forks (por src)
+            let img = document.querySelector('img[src*="offline-sprite"]');
+            // chrome://dino (por id)
+            let imgById = document.getElementById('offline-resources-1x');
+
+            if (img) {
+                this._imageElement = img;
+                this._originalSpriteSrc = img.src;
+                this._currentTexture = img.src;
+            }
+            if (imgById) {
+                this._imageElementById = imgById;
+                this._originalSpriteSrc = imgById.src;
+                this._currentTexture = imgById.src;
             }
 
             this._dashEnabled = true;
@@ -124,24 +145,33 @@
                 }
             }
         }
+
+        // Cambia setTextures para soportar ambas variantes
         setTextures(url) {
-            if (!canSwapSprites()) {
-                alert("Sprite changing only works on chromedino.com!");
-                return;
-            }
-            if (!this._imageElement) {
-                this._imageElement = document.querySelector('img[src*="offline-sprite"]') ||
-                Array.from(document.getElementsByTagName("img")).find(img => img.src.includes("offline-sprite"));
-            }
+            let changed = false;
             if (this._imageElement) {
                 this._imageElement.src = url;
+                changed = true;
+            }
+            if (this._imageElementById) {
+                this._imageElementById.src = url;
+                changed = true;
+            }
+            if (changed) {
                 this._currentTexture = url;
-                // Also update the instance's reference if possible
-                if (this.instance && this.instance.spriteDef) this.instance.spriteDef.spriteSheet = url;
             } else {
                 alert("Couldn't find the dino sprite image element.");
             }
         }
+
+        // Y en reset():
+        reset() {
+            // Restaurar ambos si existen
+            if (this._imageElement || this._imageElementById) {
+                this.setTextures(this._originalSpriteSrc || SPRITE_DEFAULT);
+            }
+        }
+
         showTextures() {
             if (!canSwapSprites()) {
                 alert("Only available on chromedino.com");
@@ -150,9 +180,7 @@
             console.log(`[DinoCheats] Current Sprite Sheet URL:`, this._currentTexture);
             return this._currentTexture;
         }
-        reset() {
-            this.setTextures(this._originalSpriteSrc || SPRITE_DEFAULT);
-        }
+
     }
 
     // API
@@ -411,8 +439,16 @@
         }
 
         genSections() {
-            // Helper para generar los botones de los presets de sprites
+            // Helper to generate official sprite preset buttons
             const spritePresetsHtml = SPRITE_PRESETS.map(s => `
+            <button class="preset-sprite dc-btn-action" data-url="${s.url}" title="${s.name}">
+            <img src="${s.url}" alt="${s.name}" style="height:28px; width:auto; vertical-align:middle; margin-right:7px; border-radius:4px; background:#222;">
+            ${s.name}
+            </button>
+            `).join('');
+
+            // Helper to generate community sprite preset buttons
+            const comSpritePresetsHtml = COM_SPRITE_PRESETS.map(s => `
             <button class="preset-sprite dc-btn-action" data-url="${s.url}" title="${s.name}">
             <img src="${s.url}" alt="${s.name}" style="height:28px; width:auto; vertical-align:middle; margin-right:7px; border-radius:4px; background:#222;">
             ${s.name}
@@ -422,54 +458,38 @@
             return `
             <div class="dc-section active" id="section-general">
             <h2>${this.L.general}</h2>
-
             <div class="dc-row">
             <span class="dc-label">${this.L.godmode}</span>
-            <label class="dc-switch">
-            <input type="checkbox" id="chk-god">
-            <span class="dc-slider"></span>
-            </label>
+            <label class="dc-switch"><input type="checkbox" id="chk-god"><span class="dc-slider"></span></label>
             </div>
-
             <div class="dc-row">
             <span class="dc-label">${this.L.pause}</span>
-            <label class="dc-switch">
-            <input type="checkbox" id="chk-pause">
-            <span class="dc-slider"></span>
-            </label>
+            <label class="dc-switch"><input type="checkbox" id="chk-pause"><span class="dc-slider"></span></label>
             </div>
-
             <div class="dc-row">
             <span class="dc-label">${this.L.speed}</span>
             <input type="range" id="rng-speed" class="dc-range" min="10" max="500" value="13">
             <input type="number" id="num-speed" class="dc-input" value="13">
             </div>
-
             <div class="dc-row">
             <span class="dc-label">${this.L.distance}</span>
             <input type="range" id="rng-dist" class="dc-range" min="0" max="99999" value="0">
             <input type="number" id="num-dist" class="dc-input" value="0">
             <button id="btn-dist" class="dc-btn-action">${this.L.apply}</button>
             </div>
-
             <div class="dc-row">
             <span class="dc-label">${this.L.resetScore}</span>
             <button id="btn-reset" class="dc-btn-action">${this.L.resetScore}</button>
             </div>
-
             <div class="dc-row">
             <span class="dc-label">${this.L.die}</span>
             <button id="btn-kill" class="dc-btn-action">${this.L.die}</button>
             <span class="dc-label" style="margin-left:10px">${this.L.revive}</span>
             <button id="btn-revive" class="dc-btn-action">${this.L.revive}</button>
             </div>
-
             <div class="dc-row">
             <span class="dc-label">${this.L.safeMode}</span>
-            <label class="dc-switch">
-            <input type="checkbox" id="chk-safe">
-            <span class="dc-slider"></span>
-            </label>
+            <label class="dc-switch"><input type="checkbox" id="chk-safe"><span class="dc-slider"></span></label>
             </div>
             </div>
 
@@ -487,15 +507,20 @@
             </h3>
 
             <div class="dc-row" style="gap:10px; flex-wrap:wrap; margin-bottom:10px;">
-            <span class="dc-label" title="URL of sprite sheet image">URL:</span>
-            <input id="sprite-url" type="url" value="${SPRITE_DEFAULT}" style="flex:2 1 180px;" class="dc-input">
+            <span class="dc-label">Sprite Sheet URL:</span>
+            <input id="sprite-url" type="url" value="${SPRITE_DEFAULT}" style="flex:2 1 180px; min-width:75px;" class="dc-input">
             <button id="btn-apply-sprite" class="dc-btn-action">Apply</button>
             <button id="btn-reset-sprite" class="dc-btn-action">Reset</button>
             </div>
 
-            <div class="dc-row" style="gap:10px; flex-wrap:wrap;">
+            <div class="dc-row" style="gap:10px; flex-wrap:wrap; margin-bottom:10px;">
             <span class="dc-label">Presets:</span>
             ${spritePresetsHtml}
+            </div>
+
+            <div class="dc-row" style="gap:10px; flex-wrap:wrap;">
+            <span class="dc-label">chromedino.com or Others Presets:</span>
+            ${comSpritePresetsHtml}
             </div>
             </div>
             </div>
@@ -507,13 +532,9 @@
             <input type="range" id="rng-jump" class="dc-range" min="5" max="30" value="10">
             <input type="number" id="num-jump" class="dc-input" value="10">
             </div>
-
             <div class="dc-row">
             <span class="dc-label">Dash (Shift)</span>
-            <label class="dc-switch">
-            <input type="checkbox" id="chk-dash" checked>
-            <span class="dc-slider"></span>
-            </label>
+            <label class="dc-switch"><input type="checkbox" id="chk-dash" checked><span class="dc-slider"></span></label>
             <span class="dc-label" style="margin-left:15px;">Boost</span>
             <input type="range" id="rng-dash-boost" class="dc-range" min="5" max="200" value="25">
             <input type="number" id="num-dash-boost" class="dc-input" value="25">
@@ -536,8 +557,8 @@
             <div style="color:#babec3; font-size:13px; line-height:1.7; margin-top:15px;">
             ${this.L.desc}
             <br><br>
-            <b>DevTools Console:</b><br>
-            <code>DinoCheats.setSpeed(value)</code>, <code>DinoCheats.setGodMode(true)</code>
+            <b>DevTools:</b><br>
+            <code>DinoCheats.setSpeed(value)</code>, <code>DinoCheats.setGodMode(true)</code>, etc.
             </div>
             </div>
 
@@ -547,22 +568,24 @@
             <path fill="currentColor" d="M7.62 3.815h12.19v1.52H7.62Zm0 19.81h1.52v1.52H7.62ZM6.1 5.335h1.52v10.67H6.1Zm-1.53 10.67H6.1v4.57H4.57Zm-1.52 9.14h1.52v1.52H3.05Zm0-4.57h1.52v1.52H3.05Zm-1.53 3.05h1.53v1.52H1.52ZM0 5.335h3.05v1.52H0Zm1.52 15.24h1.53v-1.53H1.52v-1.52H0v6.1h1.52z"/>
             </svg>
             <h2>${this.L.logo}</h2>
-            <span class="dc-label" style="display:block; margin-bottom:15px;">${this.L.ver}</span>
+            <span class="dc-label">Alpha 0.1</span><br><br>
 
-            <p style="font-size:12px; color:#babec3; margin:10px 0;">
-            This tool is created for educational and fun purposes only.<br>
-            The developer is not responsible for any misuse.
+            <p style="font-size:13px; line-height:1.4; color:#babec3;">
+            This is not made to cheat the game, I created this for fun.<br>
+            If you are using this really for Cheats, I'm not responsible for these actions.
             </p>
 
             <hr style="border:0; border-top:1px solid var(--soft); margin:15px 0;">
-            <a href="https://ko-fi.com/andrew4630" target="_blank" class="dc-btn-action" style="text-decoration:none; display:inline-block; padding:8px 20px;">Support us on Ko-fi</a>
+            <div style="margin-bottom:15px;">
+            <a href="https://ko-fi.com/andrew4630" target="_blank" class="dc-btn-action" style="text-decoration:none; display:inline-block; padding:8px 20px;">Support us</a>
+            </div>
             <hr style="border:0; border-top:1px solid var(--soft); margin:15px 0;">
 
-            <h3>Supported Sites</h3>
-            <div style="font-size:12px; opacity:0.8;">
-            • chromedino.com (Use Safe Mode)<br>
-            • chrome://dino (In Development)<br>
-            • pwa-dino.github.io (In Development)
+            <h2>Supported Sites</h2>
+            <div style="font-size:12px; color:#babec3; text-align:left; display:inline-block;">
+            • chromedpino.com (Use Safe Mode)<br>
+            • chrome://dino (Currently In Working)<br>
+            • pwa-dino.github.io (Currently In Working)
             </div>
             </div>
             `;
